@@ -4,11 +4,11 @@ Please follow my instructions:
 
 Step 1 - Clone Project
 
-[code]git clone https://github.com/wildanfuady/codeigniter-4-auth-with-jwt.git[/code]
+git clone https://github.com/wildanfuady/codeigniter-4-auth-with-jwt.git
 
 Step 2 - Create Database
 
-Please create a database named [code]ci4_auth_jwt[/code]
+Please create a database named ci4_auth_jwt
 
 Step 3 - Config Environment
 
@@ -18,28 +18,30 @@ Step 4 - Migrate Table Users
 
 Follow this command through the terminal:
 
-[code]php spark migrate[/code]
+php spark migrate
 
 Step 5 - Testing
 
 Follow this command through the terminal:
 
-[code]php spark serve[/code]
+php spark serve
 
-Register:
+Then open the postman software with the post method.
 
-[code]localhost:8080/auth/register[/code]
+Register URL:
+
+localhost:8080/auth/register
 
 Login:
 
-[code]localhost:8080/auth/login[/code]
+localhost:8080/auth/login
 
 Home:
 
-[code]localhost:8080/home[/code]
+localhost:8080/home
 
-When accessing home must include a token in the header.
+When accessing home must include a token in the header and use get method.
 
 Enjoy!
 
-Tutorial by [https://ilmucoding.com]https://ilmucoding.com/
+Tutorial by https://ilmucoding.com/
