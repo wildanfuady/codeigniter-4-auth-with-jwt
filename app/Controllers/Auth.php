@@ -4,12 +4,6 @@ use \Firebase\JWT\JWT;
 use App\Models\Auth_model;
 use CodeIgniter\RESTful\ResourceController;
 
-header("Access-Control-Allow-Origin: * ");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
 class Auth extends ResourceController
 {
 	public function __construct()
@@ -37,95 +31,6 @@ class Auth extends ResourceController
 			-----END RSA PRIVATE KEY-----
 			EOD;
 		return $privateKey;
-	}
-
-	// public function protected()
-	// {
-	// 	$secret_key = $this->privateKey();
-
-	// 	$token = null;
-
-	// 	$authHeader = $this->request->getServer('HTTP_AUTHORIZATION');
-
-	// 	$arr = explode(" ", $authHeader);
-
-	// 	$token = $arr[1];
-
-	// 	if($token){
-
-	// 		try {
-		
-	// 			$decoded = JWT::decode($token, $secret_key, array('HS256'));
-		
-	// 			// Access is granted. Add code of the operation here 
-
-	// 			$output = [
-	// 				'message' => 'Access granted'
-	// 			];
-		
-	// 			return $this->respond($output, 200);
-		
-	// 		} catch (\Exception $e){
-
-	// 			$output = [
-	// 				'message' => 'Access denied',
-	// 				"error" => $e->getMessage()
-	// 			];
-		
-	// 			return $this->respond($output, 401);
-	// 		}
-	// 	}
-	// }
-
-	public function login()
-	{
-		$email 		= $this->request->getPost('email');
-		$password 	= $this->request->getPost('password');
-
-		$cek_login = $this->auth->cek_login($email);
-
-		// var_dump($cek_login['password']);
-
-		if(password_verify($password, $cek_login['password']))
-		{
-			$secret_key = $this->privateKey();
-			$issuer_claim = "https://ilmucoding.com"; // this can be the servername
-			$audience_claim = "THE_AUDIENCE";
-			$issuedat_claim = time(); // issued at
-			$notbefore_claim = $issuedat_claim + 10; //not before in seconds
-			$expire_claim = $issuedat_claim + 3600; // expire time in seconds
-			$token = array(
-				"iss" => $issuer_claim,
-				"aud" => $audience_claim,
-				"iat" => $issuedat_claim,
-				"nbf" => $notbefore_claim,
-				"exp" => $expire_claim,
-				"data" => array(
-					"id" => $cek_login['id'],
-					"firstname" => $cek_login['first_name'],
-					"lastname" => $cek_login['last_name'],
-					"email" => $cek_login['email']
-				)
-			);
-
-			$jwt = JWT::encode($token, $secret_key);
-
-			$output = [
-				'status' => 200,
-				'message' => 'Berhasil login',
-				"token" => $jwt,
-                "email" => $email,
-                "expireAt" => $expire_claim
-			];
-			return $this->respond($output, 200);
-		} else {
-			$output = [
-				'status' => 401,
-				'message' => 'Login failed',
-				"password" => $password
-			];
-			return $this->respond($output, 401);
-		}
 	}
 
 	public function register()
@@ -160,6 +65,57 @@ class Auth extends ResourceController
 				'message' => 'Gagal register'
 			];
     		return $this->respond($output, 400);
+		}
+	}
+
+	public function login()
+	{
+		$email 		= $this->request->getPost('email');
+		$password 	= $this->request->getPost('password');
+
+		$cek_login = $this->auth->cek_login($email);
+
+		// var_dump($cek_login['password']);
+
+		if(password_verify($password, $cek_login['password']))
+		{
+			$secret_key = $this->privateKey();
+			$issuer_claim = "THE_CLAIM"; // this can be the servername. Example: https://domain.com
+			$audience_claim = "THE_AUDIENCE";
+			$issuedat_claim = time(); // issued at
+			$notbefore_claim = $issuedat_claim + 10; //not before in seconds
+			$expire_claim = $issuedat_claim + 3600; // expire time in seconds
+			$token = array(
+				"iss" => $issuer_claim,
+				"aud" => $audience_claim,
+				"iat" => $issuedat_claim,
+				"nbf" => $notbefore_claim,
+				"exp" => $expire_claim,
+				"data" => array(
+					"id" => $cek_login['id'],
+					"firstname" => $cek_login['first_name'],
+					"lastname" => $cek_login['last_name'],
+					"email" => $cek_login['email']
+				)
+			);
+
+			$token = JWT::encode($token, $secret_key);
+
+			$output = [
+				'status' => 200,
+				'message' => 'Berhasil login',
+				"token" => $token,
+                "email" => $email,
+                "expireAt" => $expire_claim
+			];
+			return $this->respond($output, 200);
+		} else {
+			$output = [
+				'status' => 401,
+				'message' => 'Login failed',
+				"password" => $password
+			];
+			return $this->respond($output, 401);
 		}
 	}
 
